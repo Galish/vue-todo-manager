@@ -7,6 +7,8 @@
 				class="todo"
 				v-for="todo in allTodos"
 				:key="todo.id"
+				@dblclick="onDblClick(todo)"
+				v-bind:class="{ 'is-complete': todo.completed }"
 			>
 				{{todo.title}}
 
@@ -28,7 +30,16 @@
 		name: 'Todos',
 		computed: mapGetters([ 'allTodos' ]),
 		methods: {
-			...mapActions([ 'fetchTodos', 'deleteTodo' ])
+			...mapActions([ 'fetchTodos', 'deleteTodo', 'updateTodo' ]),
+			onDblClick({ completed, id, title }) {
+				const updatedTodo = {
+					id,
+					title,
+					completed: !completed
+				}
+
+				this.updateTodo(updatedTodo)
+			}
 		},
 		created() {
 			this.fetchTodos()
@@ -51,6 +62,11 @@
 		text-align: center;
 		position: relative;
 		cursor: pointer;
+	}
+
+	.is-complete {
+		background-color: #35495e;
+		color: #fff;
 	}
 
 	.delete {
